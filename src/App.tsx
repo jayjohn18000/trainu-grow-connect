@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppLayout } from "./components/AppLayout";
 import TrainerDashboard from "./pages/TrainerDashboard";
+import ClientDashboard from "./pages/ClientDashboard";
 import Directory from "./pages/Directory";
 import TrainerProfile from "./pages/TrainerProfile";
 import Community from "./pages/Community";
@@ -30,6 +31,7 @@ const App = () => (
           
           {/* Authenticated routes with layout */}
           <Route path="/dashboard" element={<AppLayout><TrainerDashboard /></AppLayout>} />
+          <Route path="/dashboard/client" element={<AppLayout><ClientDashboard /></AppLayout>} />
           <Route path="/community" element={<AppLayout><Community /></AppLayout>} />
           <Route path="/growth" element={<AppLayout><Growth /></AppLayout>} />
           <Route path="/messages" element={<AppLayout><Messages /></AppLayout>} />
