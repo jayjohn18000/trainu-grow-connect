@@ -23,4 +23,13 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    files: ["src/ui/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-globals": ["error", {
+        name: "fetch",
+        message: "No data fetching in UI layer."
+      }]
+    }
+  }
 );

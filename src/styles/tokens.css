@@ -1,0 +1,31 @@
+:root{
+  /* colors */
+  --tu-bg: 255 255 255;
+  --tu-fg: 17 24 39;
+  --tu-muted: 107 114 128;
+  --tu-primary: 6 182 212; /* cyan-500 */
+  --tu-primary-fg: 255 255 255;
+  --tu-card: 249 250 251;
+
+  /* spacing */
+  --tu-gap: 1rem;
+  --tu-radius: 1rem;
+
+  /* sizing */
+  --tu-avatar: 72px;
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --tu-bg: 17 24 39;
+    --tu-fg: 243 244 246;
+    --tu-muted: 156 163 175;
+    --tu-card: 31 41 55;
+  }
+}
+
+html,body,#root{height:100%}
+body{
+  background-color: rgb(var(--tu-bg));
+  color: rgb(var(--tu-fg));
+}

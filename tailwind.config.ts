@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: ["./index.html", "./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
     container: {
@@ -14,6 +14,12 @@ export default {
     },
     extend: {
       colors: {
+        bg: "rgb(var(--tu-bg))",
+        fg: "rgb(var(--tu-fg))",
+        muted: "rgb(var(--tu-muted))",
+        primary: "rgb(var(--tu-primary))",
+        "primary-fg": "rgb(var(--tu-primary-fg))",
+        card: "rgb(var(--tu-card))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -59,6 +65,7 @@ export default {
         },
       },
       borderRadius: {
+        xl: "var(--tu-radius)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
