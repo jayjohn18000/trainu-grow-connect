@@ -8,6 +8,7 @@ import TrainerDashboard from "./pages/TrainerDashboard";
 import ClientDashboard from "./pages/ClientDashboard";
 import Directory from "./pages/Directory";
 import TrainerProfile from "./pages/TrainerProfile";
+import EventDetail from "./pages/EventDetail";
 import Community from "./pages/Community";
 import Growth from "./pages/Growth";
 import Messages from "./pages/Messages";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/" element={<Navigate to="/directory" replace />} />
           <Route path="/directory" element={<Directory />} />
           <Route path="/trainers/:slug" element={<TrainerProfile />} />
+          <Route path="/events/:id" element={<AppLayout><EventDetail /></AppLayout>} />
           
           {/* Authenticated routes with layout */}
           <Route path="/dashboard" element={<AppLayout><TrainerDashboard /></AppLayout>} />

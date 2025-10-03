@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { events, communityMembers } from "@/lib/data";
 import { Button } from "@/components/ui/button";
@@ -25,40 +26,42 @@ export default function Community() {
         <TabsContent value="events" className="mt-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {events.map((event) => (
-              <div key={event.id} className="metric-card hover:card-elevated transition-all">
-                <div className="aspect-video bg-secondary rounded-lg mb-4 overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <h3 className="text-xl font-semibold text-foreground">{event.title}</h3>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span>
-                        {new Date(event.date).toLocaleDateString('en-US', {
-                          weekday: 'long',
-                          month: 'long',
-                          day: 'numeric',
-                        })}{" "}
-                        at {event.time}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      <span>{event.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <UsersIcon className="h-4 w-4" />
-                      <span>{event.attending} attending</span>
-                    </div>
+              <Link key={event.id} to={`/events/${event.id}`} className="block">
+                <div className="metric-card hover:card-elevated transition-all">
+                  <div className="aspect-video bg-secondary rounded-lg mb-4 overflow-hidden">
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <Button className="w-full">RSVP</Button>
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-semibold text-foreground">{event.title}</h3>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>
+                          {new Date(event.date).toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            month: 'long',
+                            day: 'numeric',
+                          })}{" "}
+                          at {event.time}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        <span>{event.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <UsersIcon className="h-4 w-4" />
+                        <span>{event.attending} attending</span>
+                      </div>
+                    </div>
+                    <Button className="w-full">View Details</Button>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </TabsContent>
