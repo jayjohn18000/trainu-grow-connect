@@ -10,6 +10,7 @@ import GymAdminDashboard from "@/pages/GymAdminDashboard";
 import Calendar from "@/pages/Calendar";
 import Progress from "@/pages/Progress";
 import Programs from "@/pages/Programs";
+import WorkoutLogger from "@/pages/WorkoutLogger";
 import Clients from "@/pages/Clients";
 import Messages from "@/pages/Messages";
 import Community from "@/pages/Community";
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/directory" element={<Directory />} />
           <Route path="/trainers/:slug" element={<TrainerProfile />} />
           <Route path="/calendar" element={<Calendar />} />
+          <Route path="/workout" element={<WorkoutLogger />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/programs" element={<Programs />} />
           <Route path="/clients" element={<Clients />} />

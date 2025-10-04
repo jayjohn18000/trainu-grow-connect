@@ -9,6 +9,7 @@ import {
   Calendar,
   Activity,
   Folder,
+  Dumbbell,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "@/lib/store/useAuthStore";
@@ -34,6 +35,7 @@ const getNavItems = (role: string) => {
     client: [
       { title: "Dashboard", url: "/dashboard/client", icon: LayoutDashboard },
       { title: "Discover", url: "/discover", icon: Search },
+      { title: "Workout", url: "/workout", icon: Dumbbell },
       { title: "Progress", url: "/progress", icon: Activity },
       { title: "Programs", url: "/programs", icon: Folder },
       { title: "Community", url: "/community", icon: Users },
