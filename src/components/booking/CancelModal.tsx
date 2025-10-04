@@ -20,15 +20,17 @@ type Props = {
     date: string;
     time: string;
   };
+  onSuccess?: () => void;
 };
 
-export function CancelModal({ open, onOpenChange, session }: Props) {
+export function CancelModal({ open, onOpenChange, session, onSuccess }: Props) {
   const handleCancel = () => {
     toast({
       title: "Session Cancelled",
       description: `${session.title} on ${session.date} has been cancelled.`,
       variant: "destructive",
     });
+    onSuccess?.();
     onOpenChange(false);
   };
 

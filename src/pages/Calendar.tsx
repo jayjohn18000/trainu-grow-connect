@@ -1,54 +1,106 @@
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/store/useAuthStore";
-import { Calendar as CalendarIcon, Plus, MoreVertical } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { BookingWizard } from "@/components/booking/BookingWizard";
 import { RescheduleModal } from "@/components/booking/RescheduleModal";
 import { CancelModal } from "@/components/booking/CancelModal";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { CalendarGrid } from "@/components/calendar/CalendarGrid";
+import { SessionList } from "@/components/calendar/SessionList";
+import { AvailabilityDialog } from "@/components/calendar/AvailabilityDialog";
+import { useCalendarStore } from "@/lib/store/useCalendarStore";
+import { calendarApi } from "@/services/calendar";
+import type { Session } from "@/lib/store/useCalendarStore";
 
 export default function Calendar() {
   const { user } = useAuthStore();
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [rescheduleSession, setRescheduleSession] = useState<any>(null);
-  const [cancelSession, setCancelSession] = useState<any>(null);
+  const [availabilityOpen, setAvailabilityOpen] = useState(false);
+  const [rescheduleSession, setRescheduleSession] = useState<Session | null>(null);
+  const [cancelSession, setCancelSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const upcomingSessions = [
-    {
-      id: "1",
-      title: "Strength Training",
-      trainer: "Alex Carter",
-      date: "2025-10-05",
-      time: "10:00 AM",
-      duration: "60 min",
-      type: "in_person",
-    },
-    {
-      id: "2",
-      title: "HIIT Bootcamp",
-      trainer: "Riley Nguyen",
-      date: "2025-10-06",
-      time: "6:00 PM",
-      duration: "45 min",
-      type: "in_person",
-    },
-    {
-      id: "3",
-      title: "Nutrition Consultation",
-      trainer: "Riley Nguyen",
-      date: "2025-10-08",
-      time: "2:00 PM",
-      duration: "30 min",
-      type: "virtual",
-    },
-  ];
+  const {
+    sessions,
+    selectedDate,
+    viewMode,
+    setSessions,
+    setSelectedDate,
+    updateSession,
+    getFilteredSessions,
+  } = useCalendarStore();
+
+  useEffect(() => {
+    loadSessions();
+  }, [user]);
+
+  const loadSessions = async () => {
+    if (!user) return;
+    setIsLoading(true);
+    try {
+      const data = await calendarApi.getSessions(
+        user.role === "trainer" ? user.id : undefined,
+        user.role === "client" ? user.id : undefined
+      );
+      setSessions(data);
+    } catch (error) {
+      console.error("Failed to load sessions:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load sessions",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleJoinSession = (session: Session) => {
+    toast({
+      title: "Join Session",
+      description: "Opening virtual session...",
+    });
+  };
+
+  const handleMarkComplete = async (session: Session) => {
+    try {
+      await calendarApi.markSessionComplete(session.id);
+      await loadSessions();
+      toast({
+        title: "Session Completed",
+        description: "Session marked as complete",
+      });
+    } catch (error) {
+      console.error("Failed to mark session complete:", error);
+      toast({
+        title: "Error",
+        description: "Failed to mark session complete",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleMarkNoShow = async (session: Session) => {
+    try {
+      await calendarApi.markSessionNoShow(session.id);
+      await loadSessions();
+      toast({
+        title: "Session Updated",
+        description: "Session marked as no-show",
+      });
+    } catch (error) {
+      console.error("Failed to mark no-show:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update session",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const filteredSessions = getFilteredSessions();
+  const upcomingSessions = filteredSessions.filter((s) => s.status === "upcoming");
 
   return (
     <div className="space-y-6">
@@ -69,91 +121,61 @@ export default function Calendar() {
             </Button>
           )}
           {user?.role === "trainer" && (
-            <Button
-              onClick={() =>
-                toast({ title: "Add Availability", description: "Opening availability editor..." })
-              }
-            >
+            <Button onClick={() => setAvailabilityOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Availability
+              Manage Availability
             </Button>
           )}
         </div>
       </div>
 
-      {/* Calendar view placeholder */}
-      <Card className="p-8 text-center">
-        <CalendarIcon className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-        <h3 className="text-lg font-semibold mb-2">Calendar View Coming Soon</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Interactive calendar with booking management will be available in the next phase
-        </p>
-      </Card>
+      {/* Calendar Grid */}
+      <CalendarGrid
+        selectedDate={selectedDate}
+        sessions={filteredSessions}
+        onDateSelect={setSelectedDate}
+        onMonthChange={setSelectedDate}
+      />
 
       {/* Upcoming Sessions */}
-      {user?.role === "client" && (
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Upcoming Sessions</h3>
-          <div className="space-y-3">
-            {upcomingSessions.map((session) => (
-              <div
-                key={session.id}
-                className="flex items-center justify-between p-4 bg-muted/30 rounded-lg"
-              >
-                <div className="flex-1">
-                  <p className="font-medium">{session.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    with {session.trainer} • {session.date} at {session.time}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {session.duration} • {session.type === "virtual" ? "Virtual" : "In-Person"}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  {session.type === "virtual" && (
-                    <Button
-                      size="sm"
-                      onClick={() =>
-                        toast({ title: "Join Session", description: "Opening virtual session..." })
-                      }
-                    >
-                      Join
-                    </Button>
-                  )}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="sm" variant="outline">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-background z-50">
-                      <DropdownMenuItem onClick={() => setRescheduleSession(session)}>
-                        Reschedule
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => setCancelSession(session)}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        Cancel Session
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      )}
+      <div>
+        <h3 className="text-lg font-semibold mb-4">
+          {user?.role === "client" && "Your Upcoming Sessions"}
+          {user?.role === "trainer" && "Your Schedule"}
+          {user?.role === "gym_admin" && "Facility Sessions"}
+        </h3>
+        <SessionList
+          sessions={upcomingSessions}
+          onReschedule={setRescheduleSession}
+          onCancel={setCancelSession}
+          onJoin={handleJoinSession}
+          onMarkComplete={handleMarkComplete}
+          onMarkNoShow={handleMarkNoShow}
+          userRole={user?.role}
+        />
+      </div>
 
       {/* Booking Wizard */}
       <BookingWizard open={bookingOpen} onOpenChange={setBookingOpen} />
+
+      {/* Availability Dialog */}
+      {user?.role === "trainer" && (
+        <AvailabilityDialog
+          open={availabilityOpen}
+          onOpenChange={setAvailabilityOpen}
+          trainerId={user.id}
+        />
+      )}
 
       {/* Reschedule Modal */}
       {rescheduleSession && (
         <RescheduleModal
           open={!!rescheduleSession}
-          onOpenChange={(open) => !open && setRescheduleSession(null)}
+          onOpenChange={(open) => {
+            if (!open) setRescheduleSession(null);
+          }}
           session={rescheduleSession}
+          onSuccess={loadSessions}
         />
       )}
 
@@ -161,8 +183,11 @@ export default function Calendar() {
       {cancelSession && (
         <CancelModal
           open={!!cancelSession}
-          onOpenChange={(open) => !open && setCancelSession(null)}
+          onOpenChange={(open) => {
+            if (!open) setCancelSession(null);
+          }}
           session={cancelSession}
+          onSuccess={loadSessions}
         />
       )}
     </div>

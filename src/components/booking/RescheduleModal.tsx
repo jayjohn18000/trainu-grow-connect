@@ -21,9 +21,10 @@ type Props = {
     date: string;
     time: string;
   };
+  onSuccess?: () => void;
 };
 
-export function RescheduleModal({ open, onOpenChange, session }: Props) {
+export function RescheduleModal({ open, onOpenChange, session, onSuccess }: Props) {
   const [newDate, setNewDate] = useState<Date>();
   const [newTime, setNewTime] = useState<string>();
 
@@ -39,6 +40,7 @@ export function RescheduleModal({ open, onOpenChange, session }: Props) {
         title: "Session Rescheduled",
         description: `${session.title} moved to ${format(newDate, "MMM d")} at ${newTime}`,
       });
+      onSuccess?.();
       onOpenChange(false);
       setNewDate(undefined);
       setNewTime(undefined);
