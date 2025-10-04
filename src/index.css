@@ -1,0 +1,97 @@
+@import "./styles/tokens.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Dark theme - TrainU Design System */
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
+
+    --card: 217 33% 8%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 217 33% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Vibrant cyan accent for CTAs */
+    --primary: 189 94% 55%;
+    --primary-foreground: 222 47% 4%;
+
+    --secondary: 217 33% 12%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 12%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 189 94% 55%;
+    --accent-foreground: 222 47% 4%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 15%;
+    --input: 217 33% 12%;
+    --ring: 189 94% 55%;
+
+    --radius: 1rem;
+
+    /* Chart colors */
+    --chart-1: 189 94% 55%;
+    --chart-2: 270 70% 65%;
+    --chart-3: 150 70% 50%;
+    --chart-4: 30 90% 60%;
+    --chart-5: 340 75% 55%;
+
+    --sidebar-background: 222 47% 4%;
+    --sidebar-foreground: 215 20% 65%;
+    --sidebar-primary: 189 94% 55%;
+    --sidebar-primary-foreground: 222 47% 4%;
+    --sidebar-accent: 217 33% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 15%;
+    --sidebar-ring: 189 94% 55%;
+
+    /* Shadows */
+    --shadow-card: 0 4px 24px -4px hsl(222 47% 4% / 0.4);
+    --shadow-elevated: 0 8px 40px -8px hsl(189 94% 55% / 0.15);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .card-shadow {
+    box-shadow: var(--shadow-card);
+  }
+
+  .card-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .metric-card {
+    @apply rounded-2xl border border-border bg-card p-6 card-shadow transition-all hover:border-primary/20;
+  }
+
+  .chart-grid {
+    @apply rounded-2xl border border-border bg-card p-6 card-shadow;
+  }
+}
