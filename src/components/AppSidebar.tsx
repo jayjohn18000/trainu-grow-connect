@@ -11,6 +11,7 @@ import {
   Folder,
   Dumbbell,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import {
@@ -26,12 +27,20 @@ import {
 } from "@/components/ui/sidebar";
 
 const getNavItems = (role: string) => {
-  const commonItems = [
-    { title: "Messages", url: "/messages", icon: MessageSquare, roles: ["client", "trainer", "gym_admin"] },
+  type NavItem = {
+    title: string;
+    url: string;
+    icon: any;
+    roles?: string[];
+    badge?: number;
+  };
+
+  const commonItems: NavItem[] = [
+    { title: "Messages", url: "/messages", icon: MessageSquare, roles: ["client", "trainer", "gym_admin"], badge: 3 },
     { title: "Calendar", url: "/calendar", icon: Calendar, roles: ["client", "trainer", "gym_admin"] },
   ];
 
-  const roleSpecificItems = {
+  const roleSpecificItems: Record<string, NavItem[]> = {
     client: [
       { title: "Dashboard", url: "/dashboard/client", icon: LayoutDashboard },
       { title: "Discover", url: "/discover", icon: Search },
@@ -53,7 +62,7 @@ const getNavItems = (role: string) => {
     ],
   };
 
-  return [...(roleSpecificItems[role as keyof typeof roleSpecificItems] || []), ...commonItems];
+  return [...(roleSpecificItems[role] || []), ...commonItems];
 };
 
 const secondaryItems = [
@@ -93,8 +102,25 @@ export function AppSidebar() {
                         }`
                       }
                     >
-                      <item.icon className="h-5 w-5" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <div className="relative">
+                        <item.icon className="h-5 w-5" />
+                        {!collapsed && item.badge && (
+                          <Badge 
+                            variant="default" 
+                            className="absolute -top-2 -right-2 h-4 min-w-4 px-1 text-xs"
+                          >
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </div>
+                      {!collapsed && (
+                        <span className="flex-1">{item.title}</span>
+                      )}
+                      {!collapsed && item.badge && (
+                        <Badge variant="default" className="ml-auto">
+                          {item.badge}
+                        </Badge>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

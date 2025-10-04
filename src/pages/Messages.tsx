@@ -1,130 +1,176 @@
 import { useState } from "react";
-import { conversations } from "@/lib/data";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Calendar, Send } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { ConversationList } from "@/components/messages/ConversationList";
+import { ChatWindow } from "@/components/messages/ChatWindow";
 import { toast } from "@/hooks/use-toast";
 
+const mockConversations = [
+  {
+    id: "c1",
+    name: "John Doe",
+    avatar: "https://i.pravatar.cc/150?img=10",
+    lastMessage: "Thanks for the great session today!",
+    timestamp: "2m ago",
+    unread: 2,
+    online: true,
+  },
+  {
+    id: "c2",
+    name: "Sarah Wilson",
+    avatar: "https://i.pravatar.cc/150?img=11",
+    lastMessage: "Can we reschedule tomorrow's session?",
+    timestamp: "1h ago",
+    unread: 1,
+    online: true,
+  },
+  {
+    id: "c3",
+    name: "Mike Johnson",
+    avatar: "https://i.pravatar.cc/150?img=12",
+    lastMessage: "Perfect, see you then!",
+    timestamp: "3h ago",
+    unread: 0,
+    online: false,
+  },
+  {
+    id: "c4",
+    name: "Emily Davis",
+    avatar: "https://i.pravatar.cc/150?img=13",
+    lastMessage: "I've been following the meal plan",
+    timestamp: "Yesterday",
+    unread: 0,
+    online: false,
+  },
+  {
+    id: "c5",
+    name: "Alex Chen",
+    avatar: "https://i.pravatar.cc/150?img=14",
+    lastMessage: "What time works best for you?",
+    timestamp: "2 days ago",
+    unread: 0,
+    online: true,
+  },
+];
+
+const mockMessages = {
+  c1: [
+    {
+      id: "m1",
+      senderId: "c1",
+      content: "Hey! Ready for tomorrow's session?",
+      timestamp: "10:30 AM",
+      type: "text" as const,
+    },
+    {
+      id: "m2",
+      senderId: "current",
+      content: "Absolutely! Looking forward to it.",
+      timestamp: "10:32 AM",
+      type: "text" as const,
+    },
+    {
+      id: "m3",
+      senderId: "c1",
+      content: "Great! We'll focus on form for squats tomorrow.",
+      timestamp: "10:35 AM",
+      type: "text" as const,
+    },
+    {
+      id: "m4",
+      senderId: "current",
+      content: "Sounds good. Should I warm up before arriving?",
+      timestamp: "10:36 AM",
+      type: "text" as const,
+    },
+    {
+      id: "m5",
+      senderId: "c1",
+      content: "Yes, 5-10 minutes of light cardio would be perfect. See you tomorrow!",
+      timestamp: "10:38 AM",
+      type: "text" as const,
+    },
+    {
+      id: "m6",
+      senderId: "current",
+      content: "Thanks for the great session today!",
+      timestamp: "2m ago",
+      type: "text" as const,
+    },
+  ],
+  c2: [
+    {
+      id: "m1",
+      senderId: "c2",
+      content: "Hi! I need to talk about tomorrow's session.",
+      timestamp: "1h ago",
+      type: "text" as const,
+    },
+    {
+      id: "m2",
+      senderId: "c2",
+      content: "Can we reschedule tomorrow's session?",
+      timestamp: "1h ago",
+      type: "text" as const,
+    },
+  ],
+};
+
 export default function Messages() {
-  const [selectedConv, setSelectedConv] = useState(conversations[0].id);
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
+  const [selectedConvId, setSelectedConvId] = useState(mockConversations[0].id);
+  const [messages, setMessages] = useState(mockMessages);
 
-  const handleSendMessage = async () => {
-    if (!message.trim()) {
-      toast({ title: "Empty message", description: "Please type a message first.", variant: "destructive" });
-      return;
-    }
-    setSending(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    toast({ title: "Message sent!", description: "Your message has been delivered." });
-    setMessage("");
-    setSending(false);
-  };
+  const selectedConv = mockConversations.find((c) => c.id === selectedConvId)!;
+  const conversationMessages = messages[selectedConvId as keyof typeof messages] || [];
 
-  const handleBookSession = () => {
-    toast({ title: "Booking session", description: "Calendar integration coming soon!" });
+  const handleSendMessage = (content: string, file?: File) => {
+    const newMessage = {
+      id: `m${Date.now()}`,
+      senderId: "current",
+      content,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      type: file ? (file.type.startsWith("image/") ? "image" : "file") : "text",
+      fileUrl: file ? URL.createObjectURL(file) : undefined,
+      fileName: file?.name,
+    } as const;
+
+    setMessages((prev) => ({
+      ...prev,
+      [selectedConvId]: [...(prev[selectedConvId as keyof typeof prev] || []), newMessage],
+    }));
+
+    toast({
+      title: "Message sent",
+      description: file ? `Sent ${file.name}` : "Your message has been delivered",
+    });
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Messages</h1>
+        <h1 className="text-3xl font-bold">Messages</h1>
         <p className="text-muted-foreground mt-1">
-          Stay connected with your clients and trainers.
+          Stay connected with your clients and trainers
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-        {/* Conversation List */}
-        <div className="metric-card overflow-auto">
-          <h3 className="text-lg font-semibold mb-4">Conversations</h3>
-          <div className="space-y-2">
-            {conversations.map((conv) => (
-              <button
-                key={conv.id}
-                onClick={() => setSelectedConv(conv.id)}
-                className={`w-full text-left p-3 rounded-lg transition-colors ${
-                  selectedConv === conv.id
-                    ? "bg-primary/10 border border-primary/20"
-                    : "bg-secondary/50 hover:bg-secondary"
-                }`}
-              >
-                <div className="flex items-start justify-between mb-1">
-                  <p className="font-medium text-foreground">{conv.name}</p>
-                  {conv.unread && (
-                    <span className="h-2 w-2 rounded-full bg-primary" />
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground line-clamp-1">
-                  {conv.lastMessage}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">{conv.timestamp}</p>
-              </button>
-            ))}
-          </div>
+      <Card className="h-[calc(100vh-200px)] grid grid-cols-1 lg:grid-cols-3 overflow-hidden">
+        <div className="border-r">
+          <ConversationList
+            conversations={mockConversations}
+            selectedId={selectedConvId}
+            onSelect={setSelectedConvId}
+          />
         </div>
 
-        {/* Message Thread */}
-        <div className="lg:col-span-2 metric-card flex flex-col">
-          <div className="flex items-center justify-between pb-4 border-b border-border">
-            <h3 className="text-lg font-semibold">
-              {conversations.find((c) => c.id === selectedConv)?.name}
-            </h3>
-            <Button size="sm" className="gap-2" onClick={handleBookSession}>
-              <Calendar className="h-4 w-4" />
-              Book Session
-            </Button>
-          </div>
-
-          <div className="flex-1 overflow-auto py-4 space-y-4">
-            <div className="flex justify-start">
-              <div className="bg-secondary rounded-2xl rounded-tl-sm p-3 max-w-[80%]">
-                <p className="text-sm">Hey! Ready for tomorrow's session?</p>
-                <p className="text-xs text-muted-foreground mt-1">10:30 AM</p>
-              </div>
-            </div>
-            <div className="flex justify-end">
-              <div className="bg-primary/10 rounded-2xl rounded-tr-sm p-3 max-w-[80%]">
-                <p className="text-sm">Absolutely! Looking forward to it.</p>
-                <p className="text-xs text-muted-foreground mt-1">10:32 AM</p>
-              </div>
-            </div>
-            <div className="flex justify-start">
-              <div className="bg-secondary rounded-2xl rounded-tl-sm p-3 max-w-[80%]">
-                <p className="text-sm">
-                  Great! We'll focus on form for squats tomorrow.
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">10:35 AM</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-border">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Type a message..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-                disabled={sending}
-              />
-              <Button 
-                size="icon" 
-                onClick={handleSendMessage} 
-                disabled={sending || !message.trim()}
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+        <div className="lg:col-span-2">
+          <ChatWindow
+            conversation={selectedConv}
+            messages={conversationMessages}
+            currentUserId="current"
+            onSendMessage={handleSendMessage}
+          />
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
