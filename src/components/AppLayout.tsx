@@ -1,8 +1,13 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { RoleSwitcher } from "./RoleSwitcher";
+import { Button } from "./ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -13,6 +18,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <RoleSwitcher />
           </header>
           <div className="p-6">{children}</div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="fixed bottom-6 left-6 z-50 shadow-lg"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
         </main>
       </div>
     </SidebarProvider>
