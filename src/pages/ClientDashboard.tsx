@@ -91,10 +91,26 @@ export default function ClientDashboard() {
           subtitle="toward goal"
           icon={TrendingUp}
           trend={{ value: 12, positive: true }}
+          onClick={() => navigate("/progress")}
         />
-        <KPICard title="Open Goals" value={3} subtitle="in progress" />
-        <KPICard title="Entries This Week" value={5} subtitle="logged" />
-        <KPICard title="Next Session" value="Tomorrow" subtitle="2:00 PM with Sarah" />
+        <KPICard 
+          title="Open Goals" 
+          value={3} 
+          subtitle="in progress" 
+          onClick={() => navigate("/progress")}
+        />
+        <KPICard 
+          title="Entries This Week" 
+          value={5} 
+          subtitle="logged" 
+          onClick={() => navigate("/progress")}
+        />
+        <KPICard 
+          title="Next Session" 
+          value="Tomorrow" 
+          subtitle="2:00 PM with Sarah" 
+          onClick={() => navigate("/calendar")}
+        />
       </div>
 
       {/* Goal Chart */}

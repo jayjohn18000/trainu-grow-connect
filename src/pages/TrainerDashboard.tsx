@@ -1,4 +1,4 @@
-import { Users, Calendar, TrendingUp, Target } from "lucide-react";
+import { Users, Calendar, TrendingUp, Target, Plus } from "lucide-react";
 import { KPICard } from "@/components/KPICard";
 import { MetricsChart } from "@/components/MetricsChart";
 import { trainerKPIs } from "@/lib/data";
@@ -14,13 +14,26 @@ export default function TrainerDashboard() {
     toast({ title: "All Updates", description: "Full activity feed coming soon!" });
   };
 
+  const handleCreateProgram = () => {
+    toast({ 
+      title: "AI Program Builder", 
+      description: "Creating a personalized program template with AI..." 
+    });
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">
-          Welcome back! Here's your performance overview.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground mt-1">
+            Welcome back! Here's your performance overview.
+          </p>
+        </div>
+        <Button onClick={handleCreateProgram}>
+          <Plus className="h-4 w-4 mr-2" />
+          Create Program with AI
+        </Button>
       </div>
 
       {/* KPI Row */}

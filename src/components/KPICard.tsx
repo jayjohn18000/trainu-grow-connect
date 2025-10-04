@@ -9,11 +9,15 @@ interface KPICardProps {
     value: number;
     positive: boolean;
   };
+  onClick?: () => void;
 }
 
-export function KPICard({ title, value, subtitle, icon: Icon, trend }: KPICardProps) {
+export function KPICard({ title, value, subtitle, icon: Icon, trend, onClick }: KPICardProps) {
   return (
-    <div className="metric-card">
+    <div 
+      className={`metric-card ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
