@@ -1,33 +1,14 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { conversations } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar, Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { useAuthStore } from "@/lib/store/useAuthStore";
 
 export default function Messages() {
-  const { user } = useAuthStore();
   const [selectedConv, setSelectedConv] = useState(conversations[0].id);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-
-  // Filter conversations based on user role
-  const filteredConversations = useMemo(() => {
-    if (user?.role === "gym_admin") {
-      // Gym admins can only talk to trainers
-      return conversations.filter((conv) => conv.role === "trainer");
-    }
-    if (user?.role === "trainer") {
-      // Trainers can talk to clients and other trainers
-      return conversations.filter((conv) => conv.role === "client" || conv.role === "trainer");
-    }
-    if (user?.role === "client") {
-      // Clients can only talk to trainers
-      return conversations.filter((conv) => conv.role === "trainer");
-    }
-    return conversations;
-  }, [user?.role]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) {
@@ -59,7 +40,7 @@ export default function Messages() {
         <div className="metric-card overflow-auto">
           <h3 className="text-lg font-semibold mb-4">Conversations</h3>
           <div className="space-y-2">
-            {filteredConversations.map((conv) => (
+            {conversations.map((conv) => (
               <button
                 key={conv.id}
                 onClick={() => setSelectedConv(conv.id)}
@@ -88,7 +69,7 @@ export default function Messages() {
         <div className="lg:col-span-2 metric-card flex flex-col">
           <div className="flex items-center justify-between pb-4 border-b border-border">
             <h3 className="text-lg font-semibold">
-              {filteredConversations.find((c) => c.id === selectedConv)?.name}
+              {conversations.find((c) => c.id === selectedConv)?.name}
             </h3>
             <Button size="sm" className="gap-2" onClick={handleBookSession}>
               <Calendar className="h-4 w-4" />

@@ -25,28 +25,33 @@ import {
 } from "@/components/ui/sidebar";
 
 const getNavItems = (role: string) => {
+  const commonItems = [
+    { title: "Messages", url: "/messages", icon: MessageSquare, roles: ["client", "trainer", "gym_admin"] },
+    { title: "Calendar", url: "/calendar", icon: Calendar, roles: ["client", "trainer", "gym_admin"] },
+  ];
+
   const roleSpecificItems = {
     client: [
       { title: "Dashboard", url: "/dashboard/client", icon: LayoutDashboard },
       { title: "Discover", url: "/discover", icon: Search },
-      { title: "Calendar", url: "/calendar", icon: Calendar },
-      { title: "Messages", url: "/messages", icon: MessageSquare },
+      { title: "Progress", url: "/progress", icon: Activity },
+      { title: "Programs", url: "/programs", icon: Folder },
+      { title: "Community", url: "/community", icon: Users },
     ],
     trainer: [
       { title: "Dashboard", url: "/dashboard/trainer", icon: LayoutDashboard },
-      { title: "Calendar", url: "/calendar", icon: Calendar },
-      { title: "Messages", url: "/messages", icon: MessageSquare },
       { title: "Clients", url: "/clients", icon: Users },
+      { title: "Programs", url: "/programs", icon: Folder },
+      { title: "Growth", url: "/growth", icon: TrendingUp },
     ],
     gym_admin: [
       { title: "Dashboard", url: "/dashboard/gym-admin", icon: LayoutDashboard },
       { title: "Trainers", url: "/admin/trainers", icon: Users },
       { title: "Classes", url: "/admin/classes", icon: Calendar },
-      { title: "Messages", url: "/messages", icon: MessageSquare },
     ],
   };
 
-  return roleSpecificItems[role as keyof typeof roleSpecificItems] || [];
+  return [...(roleSpecificItems[role as keyof typeof roleSpecificItems] || []), ...commonItems];
 };
 
 const secondaryItems = [
