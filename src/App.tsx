@@ -16,6 +16,7 @@ import Community from "@/pages/Community";
 import Growth from "@/pages/Growth";
 import Settings from "@/pages/Settings";
 import Admin from "@/pages/Admin";
+import AdminClasses from "@/pages/AdminClasses";
 import NotFound from "@/pages/NotFound";
 
 export default function App() {
@@ -40,7 +41,7 @@ export default function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/trainers" element={<Admin />} />
-          <Route path="/admin/classes" element={<Admin />} />
+          <Route path="/admin/classes" element={<AdminClasses />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

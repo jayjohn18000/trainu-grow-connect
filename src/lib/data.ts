@@ -205,6 +205,7 @@ export const conversations = [
   {
     id: "conv1",
     name: "Sarah Chen",
+    role: "trainer",
     lastMessage: "Great session today! Let's focus on form next time.",
     timestamp: "2h ago",
     unread: false,
@@ -212,6 +213,7 @@ export const conversations = [
   {
     id: "conv2",
     name: "Marcus Rodriguez",
+    role: "trainer",
     lastMessage: "Can we reschedule Friday's session?",
     timestamp: "5h ago",
     unread: true,
@@ -219,9 +221,26 @@ export const conversations = [
   {
     id: "conv3",
     name: "Emily Williams",
+    role: "trainer",
     lastMessage: "Thanks for the nutrition tips!",
     timestamp: "1d ago",
     unread: false,
+  },
+  {
+    id: "conv4",
+    name: "Alex Johnson",
+    role: "client",
+    lastMessage: "Looking forward to tomorrow's session!",
+    timestamp: "3h ago",
+    unread: false,
+  },
+  {
+    id: "conv5",
+    name: "Jamie Smith",
+    role: "client",
+    lastMessage: "Can I get the meal plan you mentioned?",
+    timestamp: "1d ago",
+    unread: true,
   },
 ];
 
