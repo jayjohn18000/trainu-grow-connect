@@ -1,11 +1,24 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/store/useAuthStore";
-import { Calendar as CalendarIcon, Plus } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, MoreVertical } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { BookingWizard } from "@/components/booking/BookingWizard";
+import { RescheduleModal } from "@/components/booking/RescheduleModal";
+import { CancelModal } from "@/components/booking/CancelModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Calendar() {
   const { user } = useAuthStore();
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [rescheduleSession, setRescheduleSession] = useState<any>(null);
+  const [cancelSession, setCancelSession] = useState<any>(null);
 
   const upcomingSessions = [
     {
@@ -48,16 +61,24 @@ export default function Calendar() {
             {user?.role === "gym_admin" && "View facility schedule and bookings"}
           </p>
         </div>
-        {user?.role === "trainer" && (
-          <Button
-            onClick={() =>
-              toast({ title: "Add Availability", description: "Opening availability editor..." })
-            }
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Availability
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {user?.role === "client" && (
+            <Button onClick={() => setBookingOpen(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Book Session
+            </Button>
+          )}
+          {user?.role === "trainer" && (
+            <Button
+              onClick={() =>
+                toast({ title: "Add Availability", description: "Opening availability editor..." })
+              }
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Availability
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Calendar view placeholder */}
@@ -79,7 +100,7 @@ export default function Calendar() {
                 key={session.id}
                 className="flex items-center justify-between p-4 bg-muted/30 rounded-lg"
               >
-                <div>
+                <div className="flex-1">
                   <p className="font-medium">{session.title}</p>
                   <p className="text-sm text-muted-foreground">
                     with {session.trainer} • {session.date} at {session.time}
@@ -88,16 +109,7 @@ export default function Calendar() {
                     {session.duration} • {session.type === "virtual" ? "Virtual" : "In-Person"}
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() =>
-                      toast({ title: "Reschedule", description: "Opening reschedule dialog..." })
-                    }
-                  >
-                    Reschedule
-                  </Button>
+                <div className="flex items-center gap-2">
                   {session.type === "virtual" && (
                     <Button
                       size="sm"
@@ -108,11 +120,50 @@ export default function Calendar() {
                       Join
                     </Button>
                   )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="sm" variant="outline">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="bg-background z-50">
+                      <DropdownMenuItem onClick={() => setRescheduleSession(session)}>
+                        Reschedule
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setCancelSession(session)}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        Cancel Session
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             ))}
           </div>
         </Card>
+      )}
+
+      {/* Booking Wizard */}
+      <BookingWizard open={bookingOpen} onOpenChange={setBookingOpen} />
+
+      {/* Reschedule Modal */}
+      {rescheduleSession && (
+        <RescheduleModal
+          open={!!rescheduleSession}
+          onOpenChange={(open) => !open && setRescheduleSession(null)}
+          session={rescheduleSession}
+        />
+      )}
+
+      {/* Cancel Modal */}
+      {cancelSession && (
+        <CancelModal
+          open={!!cancelSession}
+          onOpenChange={(open) => !open && setCancelSession(null)}
+          session={cancelSession}
+        />
       )}
     </div>
   );
