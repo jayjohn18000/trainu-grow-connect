@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Users, Calendar, TrendingUp, Target, Plus } from "lucide-react";
 import { KPICard } from "@/components/KPICard";
 import { MetricsChart } from "@/components/MetricsChart";
@@ -6,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
 export default function TrainerDashboard() {
+  const navigate = useNavigate();
+
   const handleViewAllSessions = () => {
     toast({ title: "All Sessions", description: "Full calendar view coming soon!" });
   };
@@ -43,24 +46,28 @@ export default function TrainerDashboard() {
           value={trainerKPIs.activeClients}
           icon={Users}
           trend={{ value: 12, positive: true }}
+          onClick={() => navigate("/clients")}
         />
         <KPICard
           title="Sessions This Week"
           value={trainerKPIs.sessionsThisWeek}
           icon={Calendar}
           trend={{ value: 8, positive: true }}
+          onClick={() => navigate("/calendar")}
         />
         <KPICard
           title="Retention Rate"
           value={`${trainerKPIs.retention}%`}
           icon={TrendingUp}
           trend={{ value: 3, positive: true }}
+          onClick={() => navigate("/clients")}
         />
         <KPICard
           title="Avg Client Progress"
           value={`${trainerKPIs.avgProgress}%`}
           icon={Target}
           trend={{ value: 5, positive: true }}
+          onClick={() => navigate("/clients")}
         />
       </div>
 

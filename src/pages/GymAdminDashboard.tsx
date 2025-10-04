@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { KPICard } from "@/components/KPICard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -5,11 +6,13 @@ import { Users, DollarSign, Calendar, TrendingUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function GymAdminDashboard() {
+  const navigate = useNavigate();
+
   const kpis = [
-    { title: "Active Trainers", value: "12", icon: Users, trend: { value: 2, positive: true } },
-    { title: "Monthly Revenue", value: "$24,580", icon: DollarSign, trend: { value: 15, positive: true } },
-    { title: "Classes This Week", value: "48", icon: Calendar, trend: { value: 5, positive: true } },
-    { title: "Capacity Fill Rate", value: "87%", icon: TrendingUp, trend: { value: 3, positive: true } },
+    { title: "Active Trainers", value: "12", icon: Users, trend: { value: 2, positive: true }, onClick: () => navigate("/admin/trainers") },
+    { title: "Monthly Revenue", value: "$24,580", icon: DollarSign, trend: { value: 15, positive: true }, onClick: () => navigate("/growth") },
+    { title: "Classes This Week", value: "48", icon: Calendar, trend: { value: 5, positive: true }, onClick: () => navigate("/admin/classes") },
+    { title: "Capacity Fill Rate", value: "87%", icon: TrendingUp, trend: { value: 3, positive: true }, onClick: () => navigate("/admin/classes") },
   ];
 
   const recentActivity = [
