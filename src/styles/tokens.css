@@ -1,11 +1,11 @@
 :root{
-  /* colors */
-  --tu-bg: 255 255 255;
-  --tu-fg: 17 24 39;
-  --tu-muted: 107 114 128;
-  --tu-primary: 6 182 212; /* cyan-500 */
-  --tu-primary-fg: 255 255 255;
-  --tu-card: 249 250 251;
+  /* TrainU portable UI tokens */
+  --tu-bg: 222 47% 4%;
+  --tu-fg: 210 40% 98%;
+  --tu-muted: 215 20% 55%;
+  --tu-primary: 189 94% 55%;
+  --tu-primary-fg: 222 47% 4%;
+  --tu-card: 217 33% 8%;
 
   /* spacing */
   --tu-gap: 1rem;
@@ -13,19 +13,4 @@
 
   /* sizing */
   --tu-avatar: 72px;
-}
-
-@media (prefers-color-scheme: dark){
-  :root{
-    --tu-bg: 17 24 39;
-    --tu-fg: 243 244 246;
-    --tu-muted: 156 163 175;
-    --tu-card: 31 41 55;
-  }
-}
-
-html,body,#root{height:100%}
-body{
-  background-color: rgb(var(--tu-bg));
-  color: rgb(var(--tu-fg));
 }
