@@ -3,12 +3,16 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Search, Calendar, Activity, MessageSquare } from "lucide-react";
+import { Search, MessageSquare, Eye } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { ClientDetailModal } from "@/components/clients/ClientDetailModal";
+import { useNavigate } from "react-router-dom";
 
 export default function Clients() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedClient, setSelectedClient] = useState<typeof clients[0] | null>(null);
+  const navigate = useNavigate();
 
   const clients = [
     {
@@ -117,20 +121,16 @@ export default function Clients() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() =>
-                        toast({ title: "Message Client", description: "Opening chat..." })
-                      }
+                      onClick={() => navigate("/messages")}
                     >
                       <MessageSquare className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
-                      variant="outline"
-                      onClick={() =>
-                        toast({ title: "View Progress", description: "Loading client progress..." })
-                      }
+                      onClick={() => setSelectedClient(client)}
                     >
-                      <Activity className="h-4 w-4" />
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Details
                     </Button>
                   </div>
                 </div>
@@ -171,6 +171,12 @@ export default function Clients() {
           <p className="text-muted-foreground">No clients found</p>
         </Card>
       )}
+
+      <ClientDetailModal
+        client={selectedClient}
+        open={!!selectedClient}
+        onOpenChange={(open) => !open && setSelectedClient(null)}
+      />
     </div>
   );
 }
