@@ -1,12 +1,31 @@
-import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { trainers } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, CheckCircle2, Calendar, ArrowLeft, MessageSquare } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function TrainerProfile() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+  const [booking, setBooking] = useState(false);
   const trainer = trainers.find((t) => t.slug === slug);
+
+  const handleBookTrainer = async () => {
+    setBooking(true);
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    toast({ 
+      title: "Booking request sent!", 
+      description: `${trainer?.name.split(' ')[0]} will reach out to schedule your session.` 
+    });
+    setBooking(false);
+  };
+
+  const handleSendMessage = () => {
+    navigate("/messages");
+    toast({ title: "Opening messages", description: `Start a conversation with ${trainer?.name.split(' ')[0]}.` });
+  };
 
   if (!trainer) {
     return (
@@ -73,11 +92,21 @@ export default function TrainerProfile() {
             </div>
 
             <div className="lg:w-80 space-y-3">
-              <Button size="lg" className="w-full gap-2 card-elevated">
+              <Button 
+                size="lg" 
+                className="w-full gap-2 card-elevated"
+                onClick={handleBookTrainer}
+                disabled={booking}
+              >
                 <Calendar className="h-5 w-5" />
-                Book with {trainer.name.split(' ')[0]}
+                {booking ? "Booking..." : `Book with ${trainer.name.split(' ')[0]}`}
               </Button>
-              <Button size="lg" variant="outline" className="w-full gap-2">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="w-full gap-2"
+                onClick={handleSendMessage}
+              >
                 <MessageSquare className="h-5 w-5" />
                 Send Message
               </Button>

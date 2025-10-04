@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { KPICard } from "@/components/KPICard";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, MessageSquare, Calendar, TrendingUp } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
+import { toast } from "@/hooks/use-toast";
 
 const goals = [
   { id: "1", name: "Weight Loss", metric: "Weight (lbs)", current: 175, target: 160 },
@@ -45,10 +47,34 @@ const goalData = {
 };
 
 export default function ClientDashboard() {
+  const navigate = useNavigate();
   const [selectedGoal, setSelectedGoal] = useState("1");
+  const [loading, setLoading] = useState<string | null>(null);
   const currentGoal = goals.find((g) => g.id === selectedGoal)!;
   const chartData = goalData[selectedGoal as keyof typeof goalData];
   const progress = Math.round(((currentGoal.current - 185) / (currentGoal.target - 185)) * 100);
+
+  const handleLogProgress = async () => {
+    setLoading("progress");
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    toast({ title: "Progress logged!", description: "Your measurements have been updated." });
+    setLoading(null);
+  };
+
+  const handleUploadCheckIn = async () => {
+    setLoading("checkin");
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    toast({ title: "Check-in uploaded!", description: "Your progress photos have been saved." });
+    setLoading(null);
+  };
+
+  const handleMessageTrainer = () => {
+    navigate("/messages");
+  };
+
+  const handleBookSession = () => {
+    toast({ title: "Booking system", description: "Session booking will be available soon!" });
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -132,28 +158,53 @@ export default function ClientDashboard() {
       <div className="metric-card">
         <h2 className="text-xl font-bold text-foreground mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button size="lg" className="gap-2 h-auto py-4">
+          <Button 
+            size="lg" 
+            className="gap-2 h-auto py-4"
+            onClick={handleLogProgress}
+            disabled={loading === "progress"}
+          >
             <TrendingUp className="h-5 w-5" />
             <div className="text-left">
-              <div className="font-semibold">Log Progress</div>
+              <div className="font-semibold">
+                {loading === "progress" ? "Logging..." : "Log Progress"}
+              </div>
               <div className="text-xs opacity-80">Update your measurements</div>
             </div>
           </Button>
-          <Button size="lg" variant="outline" className="gap-2 h-auto py-4">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="gap-2 h-auto py-4"
+            onClick={handleUploadCheckIn}
+            disabled={loading === "checkin"}
+          >
             <Upload className="h-5 w-5" />
             <div className="text-left">
-              <div className="font-semibold">Upload Check-in</div>
+              <div className="font-semibold">
+                {loading === "checkin" ? "Uploading..." : "Upload Check-in"}
+              </div>
               <div className="text-xs opacity-80">Share your progress photos</div>
             </div>
           </Button>
-          <Button size="lg" variant="outline" className="gap-2 h-auto py-4">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="gap-2 h-auto py-4"
+            onClick={handleMessageTrainer}
+          >
             <MessageSquare className="h-5 w-5" />
             <div className="text-left">
               <div className="font-semibold">Message Trainer</div>
               <div className="text-xs opacity-80">Ask questions or get advice</div>
             </div>
           </Button>
-          <Button size="lg" variant="outline" className="gap-2 h-auto py-4">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="gap-2 h-auto py-4"
+            onClick={handleBookSession}
+          >
             <Calendar className="h-5 w-5" />
             <div className="text-left">
               <div className="font-semibold">Book Session</div>

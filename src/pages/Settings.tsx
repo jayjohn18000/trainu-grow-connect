@@ -1,10 +1,35 @@
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "@/hooks/use-toast";
 
 export default function Settings() {
+  const [saving, setSaving] = useState(false);
+
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toast({ title: "Profile updated!", description: "Your changes have been saved successfully." });
+    setSaving(false);
+  };
+
+  const handleUpdatePassword = async () => {
+    setSaving(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toast({ title: "Password updated!", description: "Your password has been changed successfully." });
+    setSaving(false);
+  };
+
+  const handleSaveNotifications = async () => {
+    setSaving(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    toast({ title: "Preferences saved!", description: "Your notification settings have been updated." });
+    setSaving(false);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -43,7 +68,9 @@ export default function Settings() {
                 defaultValue="10+ years coaching elite athletes and everyday fitness enthusiasts."
               />
             </div>
-            <Button>Save Changes</Button>
+            <Button onClick={handleSaveProfile} disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
+            </Button>
           </div>
         </TabsContent>
 
@@ -61,7 +88,9 @@ export default function Settings() {
               <Label htmlFor="confirm-password">Confirm New Password</Label>
               <Input id="confirm-password" type="password" />
             </div>
-            <Button>Update Password</Button>
+            <Button onClick={handleUpdatePassword} disabled={saving}>
+              {saving ? "Updating..." : "Update Password"}
+            </Button>
           </div>
         </TabsContent>
 
@@ -103,7 +132,9 @@ export default function Settings() {
               </div>
               <Switch />
             </div>
-            <Button>Save Preferences</Button>
+            <Button onClick={handleSaveNotifications} disabled={saving}>
+              {saving ? "Saving..." : "Save Preferences"}
+            </Button>
           </div>
         </TabsContent>
       </Tabs>

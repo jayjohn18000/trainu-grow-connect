@@ -5,8 +5,21 @@ import { events, communityMembers } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Users as UsersIcon, Users2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function Community() {
+  const [joinedGroups, setJoinedGroups] = useState<string[]>([]);
+
+  const handleJoinGroup = (groupName: string) => {
+    if (joinedGroups.includes(groupName)) {
+      setJoinedGroups(joinedGroups.filter(g => g !== groupName));
+      toast({ title: "Left group", description: `You've left ${groupName}.` });
+    } else {
+      setJoinedGroups([...joinedGroups, groupName]);
+      toast({ title: "Joined group!", description: `Welcome to ${groupName}!` });
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -108,8 +121,12 @@ export default function Community() {
                       {group.members} members
                     </span>
                   </div>
-                  <Button variant="outline" className="w-full">
-                    Join Group
+                  <Button 
+                    variant={joinedGroups.includes(group.name) ? "default" : "outline"} 
+                    className="w-full"
+                    onClick={() => handleJoinGroup(group.name)}
+                  >
+                    {joinedGroups.includes(group.name) ? "Leave Group" : "Join Group"}
                   </Button>
                 </div>
               </div>

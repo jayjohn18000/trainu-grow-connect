@@ -2,8 +2,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { KPICard } from "@/components/KPICard";
 import { Button } from "@/components/ui/button";
 import { Instagram, Youtube, DollarSign, Users } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function Growth() {
+  const handleManageSocial = (platform: string) => {
+    toast({ title: `Manage ${platform}`, description: "Social media scheduler coming soon!" });
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -65,7 +70,7 @@ export default function Growth() {
                       <p className="text-sm text-muted-foreground">3 posts queued</p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">Manage</Button>
+                  <Button variant="outline" size="sm" onClick={() => handleManageSocial("Instagram")}>Manage</Button>
                 </div>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
                   <div className="flex items-center gap-3">
@@ -75,7 +80,7 @@ export default function Growth() {
                       <p className="text-sm text-muted-foreground">5 posts queued</p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">Manage</Button>
+                  <Button variant="outline" size="sm" onClick={() => handleManageSocial("TikTok")}>Manage</Button>
                 </div>
               </div>
             </div>

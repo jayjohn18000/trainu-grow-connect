@@ -3,8 +3,17 @@ import { KPICard } from "@/components/KPICard";
 import { MetricsChart } from "@/components/MetricsChart";
 import { trainerKPIs } from "@/lib/data";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 export default function TrainerDashboard() {
+  const handleViewAllSessions = () => {
+    toast({ title: "All Sessions", description: "Full calendar view coming soon!" });
+  };
+
+  const handleViewAllUpdates = () => {
+    toast({ title: "All Updates", description: "Full activity feed coming soon!" });
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -68,7 +77,7 @@ export default function TrainerDashboard() {
               </div>
             ))}
           </div>
-          <Button variant="outline" className="w-full mt-4">
+          <Button variant="outline" className="w-full mt-4" onClick={handleViewAllSessions}>
             View All Sessions
           </Button>
         </div>
@@ -94,7 +103,7 @@ export default function TrainerDashboard() {
               </div>
             ))}
           </div>
-          <Button variant="outline" className="w-full mt-4">
+          <Button variant="outline" className="w-full mt-4" onClick={handleViewAllUpdates}>
             View All Updates
           </Button>
         </div>

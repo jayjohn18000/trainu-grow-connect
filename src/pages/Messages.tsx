@@ -3,10 +3,28 @@ import { conversations } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar, Send } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 export default function Messages() {
   const [selectedConv, setSelectedConv] = useState(conversations[0].id);
   const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const handleSendMessage = async () => {
+    if (!message.trim()) {
+      toast({ title: "Empty message", description: "Please type a message first.", variant: "destructive" });
+      return;
+    }
+    setSending(true);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    toast({ title: "Message sent!", description: "Your message has been delivered." });
+    setMessage("");
+    setSending(false);
+  };
+
+  const handleBookSession = () => {
+    toast({ title: "Booking session", description: "Calendar integration coming soon!" });
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -53,7 +71,7 @@ export default function Messages() {
             <h3 className="text-lg font-semibold">
               {conversations.find((c) => c.id === selectedConv)?.name}
             </h3>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2" onClick={handleBookSession}>
               <Calendar className="h-4 w-4" />
               Book Session
             </Button>
@@ -89,12 +107,18 @@ export default function Messages() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setMessage("");
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
                   }
                 }}
+                disabled={sending}
               />
-              <Button size="icon">
+              <Button 
+                size="icon" 
+                onClick={handleSendMessage} 
+                disabled={sending || !message.trim()}
+              >
                 <Send className="h-4 w-4" />
               </Button>
             </div>
