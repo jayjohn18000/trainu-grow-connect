@@ -3,7 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Search, MessageSquare, Eye, Users } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search, MessageSquare, Eye, Users, SlidersHorizontal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { ClientDetailModal } from "@/components/clients/ClientDetailModal";
@@ -15,6 +16,8 @@ export default function Clients() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<typeof clients[0] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "at_risk" | "prospect">("all");
+  const [sortBy, setSortBy] = useState<"name" | "progress" | "revenue">("name");
   const navigate = useNavigate();
 
   const clients = [
@@ -90,9 +93,24 @@ export default function Clients() {
     },
   ];
 
-  const filteredClients = clients.filter((client) =>
-    client.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredClients = clients
+    .filter((client) => {
+      const matchesSearch = client.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "all" || client.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "progress":
+          return b.progress - a.progress;
+        case "revenue":
+          return b.revenue - a.revenue;
+        default:
+          return 0;
+      }
+    });
 
   // Simulate loading data
   useEffect(() => {
@@ -109,16 +127,39 @@ export default function Clients() {
         <p className="text-muted-foreground">Manage your client roster and track their progress</p>
       </div>
 
-      {/* Search */}
+      {/* Search & Filters */}
       <Card className="p-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search clients..."
-            className="pl-9"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="relative md:col-span-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search clients..."
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Clients</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="at_risk">Needs Attention</SelectItem>
+              <SelectItem value="prospect">Prospects</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="name">Name (A-Z)</SelectItem>
+              <SelectItem value="progress">Progress (High-Low)</SelectItem>
+              <SelectItem value="revenue">Revenue (High-Low)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </Card>
 

@@ -20,6 +20,7 @@ const mainTabs: { value: MainTab; label: string }[] = [
 const subTabs: Record<MainTab, SubTab[]> = {
   dashboard: [
     { label: "Overview", path: "/dashboard/client", roles: ["client"] },
+    { label: "Discover", path: "/discover", roles: ["client"] },
     { label: "Overview", path: "/dashboard/trainer", roles: ["trainer"] },
     { label: "Overview", path: "/dashboard/gym-admin", roles: ["gym_admin"] },
   ],
@@ -46,14 +47,15 @@ export function TabNavigation() {
   // Determine active main tab based on current path
   const getActiveMainTab = (): MainTab => {
     const path = location.pathname;
-    if (path.startsWith("/dashboard")) return "dashboard";
+    if (path.startsWith("/dashboard") || path.startsWith("/discover")) return "dashboard";
     if (
       path.startsWith("/calendar") ||
       path.startsWith("/workout") ||
       path.startsWith("/progress") ||
       path.startsWith("/clients") ||
       path.startsWith("/programs") ||
-      path.startsWith("/community/events")
+      path.startsWith("/community/events") ||
+      path.startsWith("/events")
     )
       return "schedule";
     if (

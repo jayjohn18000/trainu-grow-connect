@@ -14,6 +14,7 @@ import WorkoutLogger from "@/pages/WorkoutLogger";
 import Clients from "@/pages/Clients";
 import Messages from "@/pages/Messages";
 import CommunityEvents from "@/pages/community/Events";
+import EventDetail from "@/pages/EventDetail";
 import CommunityPeople from "@/pages/community/People";
 import CommunityGroups from "@/pages/community/Groups";
 import Growth from "@/pages/Growth";
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/clients" element={<Clients />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/community/events" element={<CommunityEvents />} />
+          <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/community/people" element={<CommunityPeople />} />
           <Route path="/community/groups" element={<CommunityGroups />} />
           <Route path="/growth" element={<Growth />} />
