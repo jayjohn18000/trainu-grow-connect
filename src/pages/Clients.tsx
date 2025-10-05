@@ -138,8 +138,8 @@ export default function Clients() {
             key={client.id} 
             className={`p-6 transition-colors ${
               client.status === "prospect" 
-                ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800" 
-                : ""
+                ? "bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700" 
+                : "bg-blue-50 dark:bg-blue-950/20"
             }`}
           >
             <div className="flex items-start gap-4">
