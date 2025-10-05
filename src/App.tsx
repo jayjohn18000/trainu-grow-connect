@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
+import { Toaster } from "@/components/ui/toaster";
+import { ErrorBoundary } from "@/components/system/ErrorBoundary";
 import Landing from "@/pages/Landing";
 import Discover from "@/pages/Discover";
 import Directory from "@/pages/Directory";
@@ -24,34 +26,37 @@ import NotFound from "@/pages/NotFound";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route element={<AppLayout><Outlet /></AppLayout>}>
-          <Route path="/discover" element={<Discover />} />
-          <Route path="/dashboard/client" element={<ClientDashboard />} />
-          <Route path="/dashboard/trainer" element={<TrainerDashboard />} />
-          <Route path="/dashboard/gym-admin" element={<GymAdminDashboard />} />
-          <Route path="/directory" element={<Directory />} />
-          <Route path="/trainers/:slug" element={<TrainerProfile />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/workout" element={<WorkoutLogger />} />
-          <Route path="/progress" element={<Progress />} />
-          <Route path="/programs" element={<Programs />} />
-          <Route path="/clients" element={<Clients />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/community/events" element={<CommunityEvents />} />
-          <Route path="/events/:id" element={<EventDetail />} />
-          <Route path="/community/people" element={<CommunityPeople />} />
-          <Route path="/community/groups" element={<CommunityGroups />} />
-          <Route path="/growth" element={<Growth />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/trainers" element={<Admin />} />
-          <Route path="/admin/classes" element={<Admin />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route element={<AppLayout><Outlet /></AppLayout>}>
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/dashboard/client" element={<ClientDashboard />} />
+            <Route path="/dashboard/trainer" element={<TrainerDashboard />} />
+            <Route path="/dashboard/gym-admin" element={<GymAdminDashboard />} />
+            <Route path="/directory" element={<Directory />} />
+            <Route path="/trainers/:slug" element={<TrainerProfile />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/workout" element={<WorkoutLogger />} />
+            <Route path="/progress" element={<Progress />} />
+            <Route path="/programs" element={<Programs />} />
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/community/events" element={<CommunityEvents />} />
+            <Route path="/events/:id" element={<EventDetail />} />
+            <Route path="/community/people" element={<CommunityPeople />} />
+            <Route path="/community/groups" element={<CommunityGroups />} />
+            <Route path="/growth" element={<Growth />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/trainers" element={<Admin />} />
+            <Route path="/admin/classes" element={<Admin />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

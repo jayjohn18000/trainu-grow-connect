@@ -104,20 +104,29 @@ export default function WorkoutLogger() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Workout Logger</h1>
-          <p className="text-muted-foreground">Track your sets, reps, and weight</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Workout Logger</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Track your sets, reps, and weight</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowRestTimer(true)}>
+        <div className="flex gap-2 flex-wrap">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowRestTimer(true)}
+            className="min-h-[44px]"
+          >
             Start Rest Timer
           </Button>
-          <Button onClick={handleCompleteWorkout}>Complete Workout</Button>
+          <Button 
+            onClick={handleCompleteWorkout}
+            className="min-h-[44px]"
+          >
+            Complete Workout
+          </Button>
         </div>
       </div>
 
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <div className="space-y-6">
           {exercises.map((exercise) => (
             <ExerciseRow
@@ -128,7 +137,11 @@ export default function WorkoutLogger() {
             />
           ))}
 
-          <Button variant="outline" className="w-full">
+          <Button 
+            variant="outline" 
+            className="w-full min-h-[44px]"
+            aria-label="Add new exercise"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Add Exercise
           </Button>

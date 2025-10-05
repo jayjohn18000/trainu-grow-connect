@@ -7,15 +7,15 @@ export default function Progress() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Progress Tracking</h1>
-        <p className="text-muted-foreground">Track measurements, photos, and personal records</p>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Progress Tracking</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">Track measurements, photos, and personal records</p>
       </div>
 
       <Tabs defaultValue="measurements" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="measurements">Measurements</TabsTrigger>
-          <TabsTrigger value="photos">Progress Photos</TabsTrigger>
-          <TabsTrigger value="records">Personal Records</TabsTrigger>
+          <TabsTrigger value="measurements" className="min-h-[44px]">Measurements</TabsTrigger>
+          <TabsTrigger value="photos" className="min-h-[44px]">Progress Photos</TabsTrigger>
+          <TabsTrigger value="records" className="min-h-[44px]">Personal Records</TabsTrigger>
         </TabsList>
         
         <TabsContent value="measurements" className="mt-6">
