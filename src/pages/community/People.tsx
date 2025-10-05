@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { communityMembers } from "@/lib/data";
 import { Users as UsersIcon } from "lucide-react";
+import { PersonProfileModal } from "@/components/community/PersonProfileModal";
 
 export default function CommunityPeople() {
+  const [selectedPerson, setSelectedPerson] = useState<typeof communityMembers[0] | null>(null);
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -15,19 +19,26 @@ export default function CommunityPeople() {
         {communityMembers.map((member) => (
           <div
             key={member.id}
-            className="metric-card flex items-center gap-4 hover:card-elevated transition-all"
+            onClick={() => setSelectedPerson(member)}
+            className="metric-card flex items-center gap-4 transition-smooth hover:shadow-lg hover:-translate-y-1 cursor-pointer group"
           >
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-smooth">
               <UsersIcon className="h-6 w-6 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-foreground">{member.name}</p>
+              <p className="font-medium text-foreground group-hover:text-primary transition-fast">{member.name}</p>
               <p className="text-sm text-muted-foreground">{member.gym}</p>
               <p className="text-xs text-muted-foreground">{member.location}</p>
             </div>
           </div>
         ))}
       </div>
+
+      <PersonProfileModal
+        person={selectedPerson}
+        open={!!selectedPerson}
+        onOpenChange={(open) => !open && setSelectedPerson(null)}
+      />
     </div>
   );
 }

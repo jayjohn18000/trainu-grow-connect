@@ -3,15 +3,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Search, MessageSquare, Eye } from "lucide-react";
-import { useState } from "react";
+import { Search, MessageSquare, Eye, Users } from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { ClientDetailModal } from "@/components/clients/ClientDetailModal";
 import { useNavigate } from "react-router-dom";
+import { ClientCardSkeletonList } from "@/components/skeletons/ClientCardSkeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function Clients() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClient, setSelectedClient] = useState<typeof clients[0] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const clients = [
@@ -91,8 +94,16 @@ export default function Clients() {
     client.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Simulate loading data
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">{/* ... keep existing code */}
       <div>
         <h1 className="text-3xl font-bold mb-2">My Clients</h1>
         <p className="text-muted-foreground">Manage your client roster and track their progress</p>
@@ -136,18 +147,21 @@ export default function Clients() {
       </div>
 
       {/* Client List */}
-      <div className="grid gap-4">
-        {filteredClients.map((client) => (
-          <Card 
-            key={client.id} 
-            className={`p-6 transition-colors ${
-              client.status === "prospect" 
-                ? "bg-blue-200 dark:bg-blue-800/50 border-blue-400 dark:border-blue-600" 
-                : client.status === "at_risk"
-                ? "bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600"
-                : ""
-            }`}
-          >
+      {isLoading ? (
+        <ClientCardSkeletonList count={4} />
+      ) : (
+        <div className="grid gap-4">
+          {filteredClients.map((client) => (
+            <Card 
+              key={client.id} 
+              className={`p-6 transition-smooth hover:shadow-lg hover:-translate-y-0.5 cursor-pointer ${
+                client.status === "prospect" 
+                  ? "bg-blue-200 dark:bg-blue-800/50 border-blue-400 dark:border-blue-600" 
+                  : client.status === "at_risk"
+                  ? "bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600"
+                  : ""
+              }`}
+            >
             <div className="flex items-start gap-4">
               <Avatar className={`h-12 w-12 ${
                 client.status === "at_risk" 
@@ -281,11 +295,22 @@ export default function Clients() {
           </Card>
         ))}
       </div>
+      )}
 
-      {filteredClients.length === 0 && (
-        <Card className="p-12 text-center">
-          <p className="text-muted-foreground">No clients found</p>
-        </Card>
+      {!isLoading && filteredClients.length === 0 && (
+        <EmptyState
+          icon={Users}
+          title="No clients found"
+          description={searchQuery ? "Try adjusting your search terms" : "Start by adding your first client"}
+          action={
+            searchQuery
+              ? {
+                  label: "Clear search",
+                  onClick: () => setSearchQuery(""),
+                }
+              : undefined
+          }
+        />
       )}
 
       <ClientDetailModal

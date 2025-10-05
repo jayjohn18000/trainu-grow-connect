@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Users as UsersIcon, Users2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { GroupDetailModal } from "@/components/community/GroupDetailModal";
 
 const groups = [
   { name: "Morning Warriors", members: 24, description: "6 AM workout crew" },
@@ -11,6 +12,7 @@ const groups = [
 
 export default function CommunityGroups() {
   const [joinedGroups, setJoinedGroups] = useState<string[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<typeof groups[0] | null>(null);
 
   const handleJoinGroup = (groupName: string) => {
     if (joinedGroups.includes(groupName)) {
@@ -33,13 +35,17 @@ export default function CommunityGroups() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {groups.map((group) => (
-          <div key={group.name} className="metric-card hover:card-elevated transition-all">
+          <div 
+            key={group.name} 
+            className="metric-card transition-smooth hover:shadow-lg hover:-translate-y-1 cursor-pointer group"
+            onClick={() => setSelectedGroup(group)}
+          >
             <div className="space-y-3">
-              <div className="h-16 w-16 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="h-16 w-16 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-smooth">
                 <Users2 className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-foreground">{group.name}</h3>
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-fast">{group.name}</h3>
                 <p className="text-sm text-muted-foreground">{group.description}</p>
               </div>
               <div className="flex items-center gap-2">
@@ -50,8 +56,11 @@ export default function CommunityGroups() {
               </div>
               <Button
                 variant={joinedGroups.includes(group.name) ? "default" : "outline"}
-                className="w-full"
-                onClick={() => handleJoinGroup(group.name)}
+                className="w-full transition-smooth hover:shadow-glow"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleJoinGroup(group.name);
+                }}
               >
                 {joinedGroups.includes(group.name) ? "Leave Group" : "Join Group"}
               </Button>
@@ -59,6 +68,18 @@ export default function CommunityGroups() {
           </div>
         ))}
       </div>
+
+      <GroupDetailModal
+        group={selectedGroup}
+        open={!!selectedGroup}
+        onOpenChange={(open) => !open && setSelectedGroup(null)}
+        isJoined={selectedGroup ? joinedGroups.includes(selectedGroup.name) : false}
+        onToggleJoin={() => {
+          if (selectedGroup) {
+            handleJoinGroup(selectedGroup.name);
+          }
+        }}
+      />
     </div>
   );
 }
