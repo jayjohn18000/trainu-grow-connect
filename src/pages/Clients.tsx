@@ -159,7 +159,13 @@ export default function Clients() {
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{client.name}</h3>
+                    <h3 className={`font-semibold ${
+                      client.status === "at_risk"
+                        ? "text-amber-600 dark:text-amber-500"
+                        : client.status === "prospect"
+                        ? "text-blue-600 dark:text-blue-400"
+                        : ""
+                    }`}>{client.name}</h3>
                     <Badge 
                       variant={
                         client.status === "active" 
