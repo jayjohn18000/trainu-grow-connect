@@ -117,16 +117,16 @@ export default function Clients() {
           <p className="text-sm text-muted-foreground mb-1">Active Programs</p>
           <p className="text-2xl font-bold">{clients.filter((c) => c.status === "active").length}</p>
         </Card>
-        <Card className="p-4">
-          <p className="text-sm text-muted-foreground mb-1">New Prospects</p>
-          <p className="text-2xl font-bold text-blue-500">
-            {clients.filter((c) => c.status === "prospect").length}
+        <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/50">
+          <p className="text-sm text-muted-foreground mb-1">⚠️ Needs Attention</p>
+          <p className="text-2xl font-bold text-amber-600 dark:text-amber-500">
+            {clients.filter((c) => c.status === "at_risk").length}
           </p>
         </Card>
-        <Card className="p-4">
-          <p className="text-sm text-muted-foreground mb-1">Total Revenue</p>
-          <p className="text-2xl font-bold">
-            ${clients.reduce((sum, c) => sum + (c.revenue || 0), 0).toLocaleString()}
+        <Card className="p-4 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800/50">
+          <p className="text-sm text-muted-foreground mb-1">New Prospects</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-500">
+            {clients.filter((c) => c.status === "prospect").length}
           </p>
         </Card>
       </div>
@@ -138,12 +138,20 @@ export default function Clients() {
             key={client.id} 
             className={`p-6 transition-colors ${
               client.status === "prospect" 
-                ? "bg-blue-200 dark:bg-blue-900/50 border-blue-400 dark:border-blue-600" 
+                ? "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800/50" 
+                : client.status === "at_risk"
+                ? "bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700/50"
                 : ""
             }`}
           >
             <div className="flex items-start gap-4">
-              <Avatar className="h-12 w-12">
+              <Avatar className={`h-12 w-12 ${
+                client.status === "at_risk" 
+                  ? "ring-2 ring-amber-400 dark:ring-amber-600" 
+                  : client.status === "prospect"
+                  ? "ring-2 ring-blue-300 dark:ring-blue-700"
+                  : ""
+              }`}>
                 <AvatarImage src={client.avatar} alt={client.name} />
                 <AvatarFallback>{client.name.substring(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
@@ -156,18 +164,18 @@ export default function Clients() {
                       variant={
                         client.status === "active" 
                           ? "default" 
-                          : client.status === "prospect"
-                          ? "outline"
-                          : "secondary"
+                          : "outline"
                       }
                       className={
                         client.status === "prospect"
-                          ? "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700"
+                          ? "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700"
+                          : client.status === "at_risk"
+                          ? "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700"
                           : ""
                       }
                     >
                       {client.status === "at_risk" 
-                        ? "At Risk" 
+                        ? "⚠️ Needs Attention" 
                         : client.status === "prospect"
                         ? "New Prospect"
                         : "Active"}
@@ -216,7 +224,11 @@ export default function Clients() {
                   <div className="mt-3">
                     <div className="w-full bg-secondary rounded-full h-2">
                       <div
-                        className="bg-primary h-2 rounded-full transition-all"
+                        className={`h-2 rounded-full transition-all ${
+                          client.status === "at_risk"
+                            ? "bg-amber-500 dark:bg-amber-600"
+                            : "bg-primary"
+                        }`}
                         style={{ width: `${client.progress}%` }}
                       />
                     </div>
