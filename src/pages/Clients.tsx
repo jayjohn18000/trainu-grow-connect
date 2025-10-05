@@ -210,17 +210,23 @@ export default function Clients() {
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
                     <p className="text-muted-foreground">Last Session</p>
-                    <p className="font-medium">{client.lastSession || "N/A"}</p>
+                    <p className={`font-medium ${
+                      client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
+                    }`}>{client.lastSession || "N/A"}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Next Session</p>
-                    <p className="font-medium">{client.nextSession || "Not scheduled"}</p>
+                    <p className={`font-medium ${
+                      client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
+                    }`}>{client.nextSession || "Not scheduled"}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">
                       {client.status === "prospect" ? "Inquiry Date" : "Progress"}
                     </p>
-                    <p className="font-medium">
+                    <p className={`font-medium ${
+                      client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
+                    }`}>
                       {client.status === "prospect" ? "2025-10-03" : `${client.progress}%`}
                     </p>
                   </div>
