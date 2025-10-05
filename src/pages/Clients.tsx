@@ -138,7 +138,7 @@ export default function Clients() {
             key={client.id} 
             className={`p-6 transition-colors ${
               client.status === "prospect" 
-                ? "bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700" 
+                ? "bg-blue-200 dark:bg-blue-800/50 border-blue-400 dark:border-blue-600" 
                 : client.status === "at_risk"
                 ? "bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600"
                 : ""
