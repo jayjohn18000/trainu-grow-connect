@@ -1,9 +1,19 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { events } from "@/lib/data";
 import { Button } from "@/components/ui/button";
+import { EventCardSkeletonGrid } from "@/components/skeletons/EventCardSkeleton";
 import { Calendar, MapPin, Users as UsersIcon } from "lucide-react";
 
 export default function CommunityEvents() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading events
+    const timer = setTimeout(() => setIsLoading(false), 700);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
@@ -13,8 +23,11 @@ export default function CommunityEvents() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {events.map((event) => (
+      {isLoading ? (
+        <EventCardSkeletonGrid />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {events.map((event) => (
           <Link key={event.id} to={`/events/${event.id}`} className="block">
             <div className="metric-card hover:card-elevated transition-all">
               <div className="aspect-video bg-secondary rounded-lg mb-4 overflow-hidden">
@@ -51,8 +64,9 @@ export default function CommunityEvents() {
               </div>
             </div>
           </Link>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

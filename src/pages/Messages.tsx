@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { ConversationList } from "@/components/messages/ConversationList";
 import { ChatWindow } from "@/components/messages/ChatWindow";
+import { ConversationSkeletonList } from "@/components/skeletons/ConversationSkeleton";
 import { toast } from "@/hooks/use-toast";
 
 const mockConversations = [
@@ -116,8 +117,15 @@ const mockMessages = {
 };
 
 export default function Messages() {
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedConvId, setSelectedConvId] = useState(mockConversations[0].id);
   const [messages, setMessages] = useState(mockMessages);
+
+  useEffect(() => {
+    // Simulate loading conversations
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const selectedConv = mockConversations.find((c) => c.id === selectedConvId)!;
   const conversationMessages = messages[selectedConvId as keyof typeof messages] || [];
@@ -154,21 +162,27 @@ export default function Messages() {
       </div>
 
       <Card className="h-[calc(100vh-200px)] grid grid-cols-1 lg:grid-cols-3 overflow-hidden">
-        <div className="border-r">
-          <ConversationList
-            conversations={mockConversations}
-            selectedId={selectedConvId}
-            onSelect={setSelectedConvId}
-          />
+        <div className="hidden lg:block border-r overflow-y-auto">
+          {isLoading ? (
+            <ConversationSkeletonList />
+          ) : (
+            <ConversationList
+              conversations={mockConversations}
+              selectedId={selectedConvId}
+              onSelect={setSelectedConvId}
+            />
+          )}
         </div>
 
         <div className="lg:col-span-2">
-          <ChatWindow
-            conversation={selectedConv}
-            messages={conversationMessages}
-            currentUserId="current"
-            onSendMessage={handleSendMessage}
-          />
+          {!isLoading && (
+            <ChatWindow
+              conversation={selectedConv}
+              messages={conversationMessages}
+              currentUserId="current"
+              onSendMessage={handleSendMessage}
+            />
+          )}
         </div>
       </Card>
     </div>

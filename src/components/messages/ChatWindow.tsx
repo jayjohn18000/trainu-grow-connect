@@ -57,7 +57,7 @@ export function ChatWindow({ conversation, messages, currentUserId, onSendMessag
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar>
@@ -78,7 +78,7 @@ export function ChatWindow({ conversation, messages, currentUserId, onSendMessag
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button size="icon" variant="ghost" onClick={handleCall}>
             <Phone className="h-4 w-4" />
           </Button>
@@ -95,7 +95,7 @@ export function ChatWindow({ conversation, messages, currentUserId, onSendMessag
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-auto p-4 space-y-4">
+      <div className="flex-1 overflow-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
         {messages.map((msg) => (
           <MessageBubble
             key={msg.id}
@@ -120,7 +120,7 @@ export function ChatWindow({ conversation, messages, currentUserId, onSendMessag
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t">
+      <div className="p-3 sm:p-4 border-t">
         <MessageInput onSend={onSendMessage} />
       </div>
     </div>

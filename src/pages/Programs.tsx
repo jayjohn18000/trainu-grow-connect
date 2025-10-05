@@ -1,12 +1,21 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import { ProgramCardSkeletonList } from "@/components/skeletons/ProgramCardSkeleton";
 import { Folder, Plus, User, Calendar, CheckCircle2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 export default function Programs() {
   const { user } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading programs
+    const timer = setTimeout(() => setIsLoading(false), 900);
+    return () => clearTimeout(timer);
+  }, []);
 
   const clientPrograms = [
     {
@@ -81,7 +90,10 @@ export default function Programs() {
           {/* Active Programs */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Active Programs</h2>
-            {clientPrograms.map((program) => (
+            {isLoading ? (
+              <ProgramCardSkeletonList />
+            ) : (
+              clientPrograms.map((program) => (
               <Card key={program.id} className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -130,7 +142,8 @@ export default function Programs() {
                   </Button>
                 </div>
               </Card>
-            ))}
+              ))
+            )}
           </div>
         </>
       )}
@@ -140,8 +153,13 @@ export default function Programs() {
           {/* Program Templates */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Your Templates</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              {trainerTemplates.map((template) => (
+            {isLoading ? (
+              <div className="grid md:grid-cols-2 gap-4">
+                <ProgramCardSkeletonList count={3} />
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-4">
+                {trainerTemplates.map((template) => (
                 <Card key={template.id} className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <Folder className="h-10 w-10 text-primary" />
@@ -181,8 +199,9 @@ export default function Programs() {
                     </Button>
                   </div>
                 </Card>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </>
       )}
