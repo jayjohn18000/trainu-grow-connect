@@ -23,7 +23,8 @@ export default function Clients() {
       lastSession: "2025-10-01",
       nextSession: "2025-10-05",
       progress: 85,
-      status: "active",
+      status: "active" as const,
+      revenue: 1200,
     },
     {
       id: "c2",
@@ -33,7 +34,8 @@ export default function Clients() {
       lastSession: "2025-09-30",
       nextSession: "2025-10-04",
       progress: 72,
-      status: "active",
+      status: "active" as const,
+      revenue: 980,
     },
     {
       id: "c3",
@@ -43,7 +45,8 @@ export default function Clients() {
       lastSession: "2025-09-15",
       nextSession: null,
       progress: 45,
-      status: "at_risk",
+      status: "at_risk" as const,
+      revenue: 450,
     },
     {
       id: "c4",
@@ -53,7 +56,30 @@ export default function Clients() {
       lastSession: "2025-10-02",
       nextSession: "2025-10-06",
       progress: 92,
-      status: "active",
+      status: "active" as const,
+      revenue: 1500,
+    },
+    {
+      id: "c5",
+      name: "David Chen",
+      avatar: "https://i.pravatar.cc/150?img=14",
+      program: "Consultation Requested",
+      lastSession: null,
+      nextSession: "2025-10-07",
+      progress: 0,
+      status: "prospect" as const,
+      revenue: 0,
+    },
+    {
+      id: "c6",
+      name: "Emily Rodriguez",
+      avatar: "https://i.pravatar.cc/150?img=15",
+      program: "Initial Assessment Booked",
+      lastSession: null,
+      nextSession: "2025-10-08",
+      progress: 0,
+      status: "prospect" as const,
+      revenue: 0,
     },
   ];
 
@@ -82,19 +108,25 @@ export default function Clients() {
       </Card>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="p-4">
           <p className="text-sm text-muted-foreground mb-1">Total Clients</p>
-          <p className="text-2xl font-bold">{clients.length}</p>
+          <p className="text-2xl font-bold">{clients.filter((c) => c.status !== "prospect").length}</p>
         </Card>
         <Card className="p-4">
           <p className="text-sm text-muted-foreground mb-1">Active Programs</p>
           <p className="text-2xl font-bold">{clients.filter((c) => c.status === "active").length}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-sm text-muted-foreground mb-1">At Risk</p>
-          <p className="text-2xl font-bold text-yellow-500">
-            {clients.filter((c) => c.status === "at_risk").length}
+          <p className="text-sm text-muted-foreground mb-1">New Prospects</p>
+          <p className="text-2xl font-bold text-blue-500">
+            {clients.filter((c) => c.status === "prospect").length}
+          </p>
+        </Card>
+        <Card className="p-4">
+          <p className="text-sm text-muted-foreground mb-1">Total Revenue</p>
+          <p className="text-2xl font-bold">
+            ${clients.reduce((sum, c) => sum + (c.revenue || 0), 0).toLocaleString()}
           </p>
         </Card>
       </div>
@@ -102,7 +134,14 @@ export default function Clients() {
       {/* Client List */}
       <div className="grid gap-4">
         {filteredClients.map((client) => (
-          <Card key={client.id} className="p-6">
+          <Card 
+            key={client.id} 
+            className={`p-6 transition-colors ${
+              client.status === "prospect" 
+                ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800" 
+                : ""
+            }`}
+          >
             <div className="flex items-start gap-4">
               <Avatar className="h-12 w-12">
                 <AvatarImage src={client.avatar} alt={client.name} />
@@ -113,8 +152,25 @@ export default function Clients() {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold">{client.name}</h3>
-                    <Badge variant={client.status === "active" ? "default" : "secondary"}>
-                      {client.status === "at_risk" ? "At Risk" : "Active"}
+                    <Badge 
+                      variant={
+                        client.status === "active" 
+                          ? "default" 
+                          : client.status === "prospect"
+                          ? "outline"
+                          : "secondary"
+                      }
+                      className={
+                        client.status === "prospect"
+                          ? "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700"
+                          : ""
+                      }
+                    >
+                      {client.status === "at_risk" 
+                        ? "At Risk" 
+                        : client.status === "prospect"
+                        ? "New Prospect"
+                        : "Active"}
                     </Badge>
                   </div>
                   <div className="flex gap-2">
@@ -140,26 +196,39 @@ export default function Clients() {
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
                     <p className="text-muted-foreground">Last Session</p>
-                    <p className="font-medium">{client.lastSession}</p>
+                    <p className="font-medium">{client.lastSession || "N/A"}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Next Session</p>
                     <p className="font-medium">{client.nextSession || "Not scheduled"}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Progress</p>
-                    <p className="font-medium">{client.progress}%</p>
+                    <p className="text-muted-foreground">
+                      {client.status === "prospect" ? "Inquiry Date" : "Progress"}
+                    </p>
+                    <p className="font-medium">
+                      {client.status === "prospect" ? "2025-10-03" : `${client.progress}%`}
+                    </p>
                   </div>
                 </div>
 
-                <div className="mt-3">
-                  <div className="w-full bg-secondary rounded-full h-2">
-                    <div
-                      className="bg-primary h-2 rounded-full transition-all"
-                      style={{ width: `${client.progress}%` }}
-                    />
+                {client.status !== "prospect" && (
+                  <div className="mt-3">
+                    <div className="w-full bg-secondary rounded-full h-2">
+                      <div
+                        className="bg-primary h-2 rounded-full transition-all"
+                        style={{ width: `${client.progress}%` }}
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {client.revenue > 0 && (
+                  <div className="mt-3 text-sm">
+                    <span className="text-muted-foreground">Lifetime Revenue: </span>
+                    <span className="font-semibold">${client.revenue.toLocaleString()}</span>
+                  </div>
+                )}
               </div>
             </div>
           </Card>

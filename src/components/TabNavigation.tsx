@@ -25,9 +25,11 @@ const subTabs: Record<MainTab, SubTab[]> = {
   ],
   schedule: [
     { label: "Calendar", path: "/calendar" },
-    { label: "Events", path: "/community/events" },
-    { label: "Workouts", path: "/workout" },
-    { label: "Progress", path: "/progress" },
+    { label: "Events", path: "/community/events", roles: ["client"] },
+    { label: "Clients", path: "/clients", roles: ["trainer", "gym_admin"] },
+    { label: "Workouts", path: "/workout", roles: ["client"] },
+    { label: "Programs", path: "/programs", roles: ["trainer", "gym_admin"] },
+    { label: "Progress", path: "/progress", roles: ["client"] },
   ],
   communication: [
     { label: "Messages", path: "/messages" },
@@ -49,6 +51,8 @@ export function TabNavigation() {
       path.startsWith("/calendar") ||
       path.startsWith("/workout") ||
       path.startsWith("/progress") ||
+      path.startsWith("/clients") ||
+      path.startsWith("/programs") ||
       path.startsWith("/community/events")
     )
       return "schedule";
