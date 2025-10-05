@@ -69,6 +69,8 @@ export default function Clients() {
       progress: 0,
       status: "prospect" as const,
       revenue: 0,
+      rating: 4.5,
+      goal: "Weight Loss",
     },
     {
       id: "c6",
@@ -80,6 +82,8 @@ export default function Clients() {
       progress: 0,
       status: "prospect" as const,
       revenue: 0,
+      rating: 5.0,
+      goal: "Strength Building",
     },
   ];
 
@@ -208,28 +212,47 @@ export default function Clients() {
                 <p className="text-sm text-muted-foreground mb-3">{client.program}</p>
 
                 <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <p className="text-muted-foreground">Last Session</p>
-                    <p className={`font-medium ${
-                      client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
-                    }`}>{client.lastSession || "N/A"}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Next Session</p>
-                    <p className={`font-medium ${
-                      client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
-                    }`}>{client.nextSession || "Not scheduled"}</p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">
-                      {client.status === "prospect" ? "Inquiry Date" : "Progress"}
-                    </p>
-                    <p className={`font-medium ${
-                      client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
-                    }`}>
-                      {client.status === "prospect" ? "2025-10-03" : `${client.progress}%`}
-                    </p>
-                  </div>
+                  {client.status === "prospect" ? (
+                    <>
+                      <div>
+                        <p className="text-muted-foreground">Rating</p>
+                        <p className="font-medium text-blue-600 dark:text-blue-400">
+                          {"rating" in client ? `⭐ ${client.rating}` : "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Goal</p>
+                        <p className="font-medium text-blue-600 dark:text-blue-400">
+                          {"goal" in client ? client.goal : "N/A"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Inquiry Date</p>
+                        <p className="font-medium text-blue-600 dark:text-blue-400">2025-10-03</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <p className="text-muted-foreground">Last Session</p>
+                        <p className={`font-medium ${
+                          client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
+                        }`}>{client.lastSession || "N/A"}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Next Session</p>
+                        <p className={`font-medium ${
+                          client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
+                        }`}>{client.nextSession || "Not scheduled"}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Progress</p>
+                        <p className={`font-medium ${
+                          client.status === "at_risk" ? "text-amber-600 dark:text-amber-500" : ""
+                        }`}>{client.progress}%</p>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {client.status !== "prospect" && (
